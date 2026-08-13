@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { calculateProjection, monthsToGoal, timeRecovered } from "./domain/projection";
+import { validateDemoUpload } from "./domain/upload";
 
 const moneyLabels = [["Housing","#8c7cff"],["Groceries","#2dd4bf"],["Dining","#ff916e"],["Transport","#61a5ff"],["Shopping","#d66cff"],["Other","#55617e"]] as const;
 const mobileNav = [["⌂","Overview"],["♻","Resources"],["◇","Future"],["◎","Goals"],["⚙","Settings"]];
@@ -27,7 +28,6 @@ const timeActivities = [
 ] as const;
 
 const inr = (n: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
-const compact = (n: number) => new Intl.NumberFormat("en-IN", { notation: "compact", maximumFractionDigits: 1 }).format(n);
 type UploadSummary = { id:number; source:string; score:number; money:number; categoryShares:number[]; monthlyTrend:number[]; screenMinutes:number; socialMinutes:number; energyKwh:number; energyCost:number; subscriptions:number; subscriptionCount:number; currentSavings:number; monthlyContribution:number; records:number; confidence:number };
 const baselineSummary: UploadSummary = { id:0,source:"Connected demo workspace",score:78,money:80000,categoryShares:[31.25,12.5,10,10,8.75,27.5],monthlyTrend:[74,78,76,82,79,84,81,86,83,88,87,92],screenMinutes:330,socialMinutes:150,energyKwh:420,energyCost:3800,subscriptions:3000,subscriptionCount:12,currentSavings:200000,monthlyContribution:20000,records:48,confidence:94 };
 const randomBetween = (min:number,max:number) => Math.round(min+Math.random()*(max-min));
@@ -73,7 +73,7 @@ export default function LifeROIDashboard() {
   const [uploadReady, setUploadReady] = useState(false);
   const [uploadSummary, setUploadSummary] = useState<UploadSummary | null>(null);
   const [projectionResource, setProjectionResource] = useState<"money"|"time"|"energy">("money");
-  const [mentorIndex, setMentorIndex] = useState(0);
+  const [mentorIndex, setMentorIndex] = useState(() => Math.floor(Math.random()*mentors.length));
   const [promiseStreak, setPromiseStreak] = useState(0);
   const [accountMenu, setAccountMenu] = useState(false);
   const [advisorInput, setAdvisorInput] = useState("");
@@ -91,7 +91,7 @@ export default function LifeROIDashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dashboard = uploadSummary ?? baselineSummary;
   const moneyBreakdown = useMemo(()=>moneyLabels.map(([name,color],index)=>[name,Math.round(dashboard.money*dashboard.categoryShares[index]/100),color] as const),[dashboard]);
-  const moneyGradient = useMemo(()=>{let start=0;return `conic-gradient(${moneyLabels.map(([,color],index)=>{const end=start+dashboard.categoryShares[index];const stop=`${color} ${start}% ${end}%`;start=end;return stop}).join(",")})`},[dashboard]);
+  const moneyGradient = useMemo(()=>`conic-gradient(${moneyLabels.map(([,color],index)=>{const start=dashboard.categoryShares.slice(0,index).reduce((sum,value)=>sum+value,0);const end=start+dashboard.categoryShares[index];return `${color} ${start}% ${end}%`}).join(",")})`,[dashboard]);
   const activityData = useMemo(()=>timeActivities.map(activity=>activity.name==="Social media"?{...activity,minutes:dashboard.socialMinutes}:activity.name==="Entertainment"?{...activity,minutes:Math.max(35,dashboard.screenMinutes-dashboard.socialMinutes-90)}:activity),[dashboard]);
   const projection = useMemo(() => calculateProjection({ monthlySpending: dashboard.money, reductionPercentage: reduction, years, annualReturn, currentSavings: dashboard.currentSavings, inflationRate: 5 }), [dashboard, reduction, years, annualReturn]);
   const recovered = timeRecovered(dashboard.socialMinutes, reduction);
@@ -119,8 +119,7 @@ export default function LifeROIDashboard() {
 
   useEffect(() => { if (!notice) return; const timer = window.setTimeout(() => setNotice(""), 2600); return () => window.clearTimeout(timer); }, [notice]);
   useEffect(() => { if (!burst) return; const timer = window.setTimeout(() => setBurst(null), 1800); return () => window.clearTimeout(timer); }, [burst]);
-  useEffect(() => { setMentorIndex(Math.floor(Math.random()*mentors.length)); const timer=window.setInterval(()=>setMentorIndex(index=>(index+1)%mentors.length),6500); return()=>window.clearInterval(timer); }, []);
-  useEffect(() => { if (uploadSummary) setAdvisorReply(`Your new dataset points to ${inr(uploadSummary.money*reduction/100)} per month in flexible-spending potential, ${Math.round(timeRecovered(uploadSummary.socialMinutes,reduction).annualHours)} reclaimable hours a year, and about ${Math.round(uploadSummary.energyKwh*reduction/100)} kWh of monthly energy opportunity.`); }, [uploadSummary, reduction]);
+  useEffect(() => { const timer=window.setInterval(()=>setMentorIndex(index=>(index+1)%mentors.length),6500); return()=>window.clearInterval(timer); }, []);
 
   function celebrate(message:string, emojis:string[]) {
     setBurst({ id:Date.now(), emojis, message });
@@ -135,13 +134,15 @@ export default function LifeROIDashboard() {
   function analyzeUpload(source:string) {
     const summary = freshSummary(source);
     setUploadSummary(summary); setUploadReady(true);
+    setAdvisorReply(`Your synthetic dataset points to ${inr(summary.money*reduction/100)} per month in flexible-spending potential, ${Math.round(timeRecovered(summary.socialMinutes,reduction).annualHours)} reclaimable hours a year, and about ${Math.round(summary.energyKwh*reduction/100)} kWh of monthly energy opportunity.`);
     celebrate(`✨ ${source} understood — ${summary.records} cross-resource records are ready!`,["📥","💰","⏳","⚡","✅"]);
   }
 
   function handleFile(event:React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-    if (file.size > 10*1024*1024) { setNotice("That file is larger than 10 MB. Please choose a smaller document."); return; }
+    const validation = validateDemoUpload(file);
+    if (!validation.ok) { setNotice(validation.message); event.target.value = ""; return; }
     analyzeUpload(file.name);
     event.target.value = "";
   }
@@ -176,6 +177,8 @@ export default function LifeROIDashboard() {
       <article key={mentorIndex} className="mentor-stage mentor-stage-top tab-section" hidden={active!=="Overview"} aria-live="polite"><div className="mentor-portrait"><img src={mentors[mentorIndex].photo} alt={`${mentors[mentorIndex].name}, ${mentors[mentorIndex].role}`}/><span>WISDOM STREAM · {mentorIndex+1}/{mentors.length}</span></div><div className="mentor-quote"><p className="eyebrow">{mentors[mentorIndex].emoji} {mentors[mentorIndex].domain}</p><blockquote>“{mentors[mentorIndex].quote}”</blockquote><div><span><b>{mentors[mentorIndex].name}</b><small>{mentors[mentorIndex].role}</small></span><a href={mentors[mentorIndex].source} target="_blank" rel="noreferrer">Read the source ↗</a></div><p className="quote-lesson"><span>💡 TRY THIS</span>{mentors[mentorIndex].lesson}</p><nav aria-label="Choose inspirational insight">{mentors.map((mentor,index)=><button key={`${mentor.name}-${index}`} className={mentorIndex===index?"selected":""} onClick={()=>setMentorIndex(index)} aria-label={`Show insight ${index+1}`}>{index+1}</button>)}</nav></div><button className="next-wisdom" aria-label="Show another insight" onClick={()=>setMentorIndex(index=>(index+1)%mentors.length)}>↻<small>Another insight</small></button></article>
 
       {!hasAnyData && active!=="Upload" && <EmptyState title="No confirmed resource data yet" message="Add a statement, screenshot, or text summary. LifeROI will only show insights after you review and confirm the extracted data." onAdd={()=>navigate("Upload")} />}
+
+      {active==="Upload" && <aside className="demo-boundary" role="note" aria-label="Demo data safety notice"><span>🛡️</span><div><b>Use synthetic samples only</b><p>This public prototype validates the file name, size, extension, and content type, but does not read or store file contents. The resulting dashboard data is generated—not extracted. Production-grade private ingestion is not enabled yet.</p></div></aside>}
 
       <section className="upload-workspace panel tab-section" hidden={active!=="Upload"} id="upload"><div className="upload-intro"><span className="upload-planet">📥</span><p className="eyebrow">RESOURCE DATA INBOX</p><h2>Turn a document into understanding.</h2><p>Choose a document or generate a fresh demo. Every analysis produces a reviewable Money, Time, and Energy snapshot.</p><div className="upload-types"><span>📷 Screenshot</span><span>📄 PDF</span><span>📊 CSV</span><span>📝 Text</span></div></div><div className="dropzone upload-dropzone"><span>↥</span><h3>Upload your resource document ✨</h3><p>Bank statement, screen-time image, utility bill, or combined summary · up to 10 MB</p><input ref={fileInputRef} className="file-input" type="file" accept=".pdf,.csv,.txt,image/*,application/pdf,text/csv,text/plain" onChange={handleFile}/><div className="upload-actions"><button className="primary" onClick={()=>fileInputRef.current?.click()}>Choose document</button><button className="ghost-action" onClick={()=>analyzeUpload("Unique demo statement")}>Generate fresh demo</button></div></div><div className={`ingestion-journey ${uploadReady?"complete":""}`}>{[["📖","Reading document"],["🧠","Understanding type"],["🔎","Extracting data"],["🏷️","Categorizing"],["✅","Ready to review"]].map(([icon,label],index)=><div key={label}><span>{icon}</span><i>{index+1}</i><b>{label}</b></div>)}</div>{uploadSummary&&<div className="upload-summary" key={uploadSummary.id}><article><span>💰</span><small>Money spend</small><b>{inr(uploadSummary.money)}</b></article><article><span>⏳</span><small>Daily screen time</small><b>{Math.floor(uploadSummary.screenMinutes/60)}h {uploadSummary.screenMinutes%60}m</b></article><article><span>⚡</span><small>Energy spend</small><b>{uploadSummary.energyKwh} kWh · {inr(uploadSummary.energyCost)}</b></article><article><span>🔁</span><small>Subscriptions</small><b>{inr(uploadSummary.subscriptions)}/mo</b></article></div>}{uploadReady && uploadSummary && <div className="review-ready"><span>🎉</span><div><b>Cross-resource analysis ready</b><p>{uploadSummary.records} records · {uploadSummary.source} · {uploadSummary.confidence}% average confidence</p></div><button onClick={()=>{navigate("Resources");setNotice("✅ Money, Time, and Energy data confirmed")}}>Review & confirm →</button></div>}<div className="modal-note"><b>🔒 Private by design</b><span>Files are user-isolated, never written to ordinary logs, and can be deleted after extraction.</span></div></section>
 
@@ -214,11 +217,32 @@ export default function LifeROIDashboard() {
     <button className="advisor-launcher compass-launcher" onClick={()=>{setAdvisor(true);window.setTimeout(()=>advisorInputRef.current?.focus(),80)}} aria-label="Open LifeROI Compass"><span>🧭</span><b>Open Compass</b><i>✦</i></button>
     {burst && <div key={burst.id} className="emoji-burst" aria-hidden="true">{burst.emojis.map((emoji,index)=><span key={`${emoji}-${index}`}>{emoji}</span>)}</div>}
     {notice && <div className="toast" role="status">{notice}</div>}
-    {advisor && <Modal title="LifeROI Compass" onClose={()=>setAdvisor(false)}><div className="compass-intro"><span>🧭</span><div><b>Your resources, connected.</b><small>Compass looks across confirmed data to surface a useful direction—not a generic answer.</small></div></div><div className={`advisor-answer ${advisorThinking?"thinking":""}`}><span>{advisorThinking?"◌":"✦"}</span><p>{advisorQuestion && <small className="advisor-question">You explored: {advisorQuestion}</small>}<b>{advisorThinking?"Mapping your resource signals…":advisorReply}</b></p></div><div className="suggestions">{Object.keys(advisorReplies).map(x=><button key={x} onClick={()=>{setAdvisorInput(x);advisorInputRef.current?.focus()}}>{x}</button>)}</div><form className="chat-input" onSubmit={e=>{e.preventDefault();askAdvisor()}}><input ref={advisorInputRef} value={advisorInput} onChange={e=>setAdvisorInput(e.target.value)} aria-label="Ask LifeROI Compass" placeholder="Explore a money, time, or future question…" autoFocus/><button type="submit" disabled={!advisorInput.trim() || advisorThinking} aria-label="Explore question">↗</button></form><small className="data-note">Compass uses only your available LifeROI data. Press Enter to explore.</small></Modal>}
+    {advisor && <Modal title="LifeROI Compass" onClose={()=>setAdvisor(false)}><div className="compass-intro"><span>🧭</span><div><b>Your resources, connected.</b><small>Compass looks across confirmed data to surface a useful direction—not a generic answer.</small></div></div><div className={`advisor-answer ${advisorThinking?"thinking":""}`}><span>{advisorThinking?"◌":"✦"}</span><p>{advisorQuestion && <small className="advisor-question">You explored: {advisorQuestion}</small>}<b>{advisorThinking?"Mapping your resource signals…":advisorReply}</b></p></div><div className="suggestions">{Object.keys(advisorReplies).map(x=><button key={x} onClick={()=>{setAdvisorInput(x);advisorInputRef.current?.focus()}}>{x}</button>)}</div><form className="chat-input" onSubmit={e=>{e.preventDefault();askAdvisor()}}><input ref={advisorInputRef} value={advisorInput} onChange={e=>setAdvisorInput(e.target.value)} aria-label="Ask LifeROI Compass" placeholder="Explore a money, time, or future question…"/><button type="submit" disabled={!advisorInput.trim() || advisorThinking} aria-label="Explore question">↗</button></form><small className="data-note">Compass uses only your available LifeROI data. Press Enter to explore.</small></Modal>}
     {info && <Modal title={info==="score"?"How your Resource Score works":info==="projection"?"About future projections":info==="energy"?"About energy efficiency":info==="time"?"About your time data":"Privacy settings explained"} onClose={()=>setInfo(null)}><div className="info-content"><span>{info==="score"?"🧭":info==="projection"?"🔮":info==="energy"?"⚡":info==="time"?"⏳":"🔐"}</span><div>{info==="score"?<><h3>A helpful estimate—not a judgment</h3><p>The score combines only your available, confirmed money, time, energy, subscription, and sustainability data. Missing resources are excluded rather than guessed.</p></>:info==="projection"?<><h3>Deterministic arithmetic</h3><p>Cash savings use exact arithmetic. Potential growth uses your selected illustrative return and is never guaranteed. Change the inputs to compare paths.</p></>:info==="energy"?<><h3>Based on available utility data</h3><p>Efficiency compares your confirmed kWh usage with recent periods. LifeROI will not display this section when no electricity data is available.</p></>:info==="time"?<><h3>Built from confirmed screen-time data</h3><p>Daily activities combine your uploaded screen-time summary with demo schedule categories. Weekly and yearly figures are deterministic conversions of those daily averages.</p></>:<><h3>Your data, your rules</h3><p>Choose source-document retention independently from confirmed insights. Deleting a source does not remove a record you have reviewed and chosen to keep.</p></>}</div></div></Modal>}
   </main>;
 }
 
 function Metric({icon,tone,name,value,trend,note,opportunity,down=false}:{icon:string;tone:string;name:string;value:string;trend:string;note:string;opportunity:string;down?:boolean}) { return <article className="metric panel"><div className={`metric-icon ${tone}`}>{icon}</div><div className="metric-main"><span>{name}</span><strong>{value}</strong><small className={down?"good":"neutral"}>{down?"↓":"•"} {trend} <i>{note}</i></small></div><div className="sparkline"><i/><i/><i/><i/><i/><i/></div><p><span>✦</span>{opportunity}</p></article> }
-function Modal({title,onClose,children}:{title:string;onClose:()=>void;children:React.ReactNode}) { return <div className="modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className="modal" role="dialog" aria-modal="true" aria-label={title}><header><div><span className="brand-mark">∞</span><h2>{title}<small>Secure demo workspace</small></h2></div><button aria-label="Close" onClick={onClose}>×</button></header>{children}</section></div> }
+function Modal({title,onClose,children}:{title:string;onClose:()=>void;children:React.ReactNode}) {
+  const modalRef = useRef<HTMLElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  const closeRef = useRef(onClose);
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
+  useEffect(() => {
+    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    modalRef.current?.querySelector<HTMLElement>("button, input, select, textarea, a[href]")?.focus();
+    function handleKeyDown(event:KeyboardEvent) {
+      if (event.key === "Escape") { event.preventDefault(); closeRef.current(); return; }
+      if (event.key !== "Tab" || !modalRef.current) return;
+      const controls = [...modalRef.current.querySelectorAll<HTMLElement>("button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]")];
+      if (!controls.length) return;
+      const first = controls[0], last = controls[controls.length-1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => { document.removeEventListener("keydown", handleKeyDown); previousFocus.current?.focus(); };
+  }, []);
+  return <div className="modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section ref={modalRef} className="modal" role="dialog" aria-modal="true" aria-labelledby="active-modal-title"><header><div><span className="brand-mark">∞</span><h2 id="active-modal-title">{title}<small>Secure demo workspace</small></h2></div><button aria-label="Close" onClick={onClose}>×</button></header>{children}</section></div>
+}
 function EmptyState({title,message,onAdd}:{title:string;message:string;onAdd:()=>void}) { return <section className="empty-state panel"><span>🌱</span><h2>{title}</h2><p>{message}</p><button className="primary" onClick={onAdd}>＋ Add resource data</button></section> }

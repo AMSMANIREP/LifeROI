@@ -100,7 +100,7 @@ test("recalculates every dashboard family from the generated dataset", async () 
   assert.match(dashboard, /const moneyBreakdown/);
   assert.match(dashboard, /const activityData/);
   assert.match(dashboard, /monthlySpending: dashboard\.money/);
-  assert.match(dashboard, /setAdvisorReply\(`Your new dataset/);
+  assert.match(dashboard, /setAdvisorReply\(`Your synthetic dataset/);
 });
 
 test("connects life impact with sourced expert inspiration", async () => {
@@ -130,7 +130,7 @@ test("places dynamic inspiration first and provides a working account menu", asy
   const quoteAt = dashboard.indexOf('className="mentor-stage mentor-stage-top');
   const heroAt = dashboard.indexOf('className="hero-grid');
   assert.ok(headerAt < quoteAt && quoteAt < heroAt);
-  assert.match(dashboard, /setMentorIndex\(Math\.floor\(Math\.random\(\)\*mentors\.length\)\)/);
+  assert.match(dashboard, /useState\(\(\) => Math\.floor\(Math\.random\(\)\*mentors\.length\)\)/);
   assert.match(dashboard, /aria-expanded=\{accountMenu\}/);
   assert.match(dashboard, /className="account-menu"/);
   assert.match(css, /\.account-menu\{/);
@@ -177,4 +177,14 @@ test("reserves a collision-free lane for the upload control", async () => {
   assert.match(css, /\.upload-fab\{top:20px;right:22px;min-width:174px;height:54px/);
   assert.match(css, /\.section-anchor\{scroll-margin-top:112px\}/);
   assert.match(css, /@media\(max-width:720px\)\{\.content\{padding-top:76px\}/);
+});
+
+test("states the prototype upload boundary and supports keyboard-safe dialogs", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dashboard = await readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8");
+  assert.match(dashboard, /Use synthetic samples only/);
+  assert.match(dashboard, /does not read or store file contents/);
+  assert.match(dashboard, /validateDemoUpload\(file\)/);
+  assert.match(dashboard, /event\.key === "Escape"/);
+  assert.match(dashboard, /aria-labelledby="active-modal-title"/);
 });

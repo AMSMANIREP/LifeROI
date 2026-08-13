@@ -26,3 +26,41 @@ test("converts reclaimed attention into annual hours", () => {
   assert.equal(result.dailyMinutes, 30);
   assert.ok(Math.abs(result.annualHours - 182.5) < 0.001);
 });
+
+test("matches an independently calculated ordinary-annuity projection", () => {
+  const input = { monthlySpending: 80000, reductionPercentage: 10, years: 20, annualReturn: 8, currentSavings: 200000, inflationRate: 5 };
+  const result = service.calculateProjection(input);
+  const months = input.years * 12;
+  const monthlyRate = input.annualReturn / 1200;
+  const contribution = input.monthlySpending * input.reductionPercentage / 100;
+  const expected = input.currentSavings * (1 + monthlyRate) ** months
+    + contribution * (((1 + monthlyRate) ** months - 1) / monthlyRate);
+  assert.ok(Math.abs(result.futureInvestmentValue - expected) < 0.01);
+  assert.ok(Math.abs(result.inflationAdjustedValue - expected / 1.05 ** 20) < 0.01);
+});
+
+test("handles supported savings boundaries without reversing the result", () => {
+  let previous = -1;
+  for (const reductionPercentage of [0, 5, 10, 15, 20, 25, 30, 100]) {
+    const result = service.calculateProjection({ monthlySpending: 80000, reductionPercentage, years: 10, annualReturn: 0 });
+    assert.ok(result.futureCashValue >= previous);
+    previous = result.futureCashValue;
+  }
+});
+
+test("rejects unsafe or nonsensical projection inputs", () => {
+  const valid = { monthlySpending: 80000, reductionPercentage: 10, years: 10, annualReturn: 8 };
+  for (const reductionPercentage of [-10, 101, Number.NaN, Number.POSITIVE_INFINITY]) {
+    assert.throws(() => service.calculateProjection({ ...valid, reductionPercentage }));
+  }
+  assert.throws(() => service.calculateProjection({ ...valid, monthlySpending: -1 }), RangeError);
+  assert.throws(() => service.calculateProjection({ ...valid, years: Number.NaN }), TypeError);
+});
+
+test("validates goal and time edge cases", () => {
+  assert.equal(service.monthsToGoal(0, 0, 0), 0);
+  assert.equal(service.monthsToGoal(1000, 0, 0), Number.POSITIVE_INFINITY);
+  assert.throws(() => service.monthsToGoal(-1, 0, 100), RangeError);
+  assert.throws(() => service.timeRecovered(1441, 10), RangeError);
+  assert.throws(() => service.timeRecovered(60, 101), RangeError);
+});
