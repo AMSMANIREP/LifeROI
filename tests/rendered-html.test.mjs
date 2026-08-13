@@ -169,3 +169,12 @@ test("derives a stable cute profile character from name and gender", async () =>
   assert.match(css, /\.character-avatar\{/);
   assert.match(css, /\.account-menu-profile\{/);
 });
+
+test("reserves a collision-free lane for the upload control", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("app/globals.css", root), "utf8");
+  assert.match(css, /\.topbar\{min-height:92px;padding-right:230px/);
+  assert.match(css, /\.upload-fab\{top:20px;right:22px;min-width:174px;height:54px/);
+  assert.match(css, /\.section-anchor\{scroll-margin-top:112px\}/);
+  assert.match(css, /@media\(max-width:720px\)\{\.content\{padding-top:76px\}/);
+});
