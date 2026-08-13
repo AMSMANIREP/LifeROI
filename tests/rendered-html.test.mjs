@@ -119,3 +119,20 @@ test("connects life impact with sourced expert inspiration", async () => {
   assert.match(css, /\.mindset-lab/);
   assert.match(layout, /Buy back your future/);
 });
+
+test("places dynamic inspiration first and provides a working account menu", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  const headerAt = dashboard.indexOf('className="topbar view-header"');
+  const quoteAt = dashboard.indexOf('className="mentor-stage mentor-stage-top');
+  const heroAt = dashboard.indexOf('className="hero-grid');
+  assert.ok(headerAt < quoteAt && quoteAt < heroAt);
+  assert.match(dashboard, /setMentorIndex\(Math\.floor\(Math\.random\(\)\*mentors\.length\)\)/);
+  assert.match(dashboard, /aria-expanded=\{accountMenu\}/);
+  assert.match(dashboard, /className="account-menu"/);
+  assert.match(css, /\.account-menu\{/);
+  assert.match(css, /\.mentor-stage-top\{/);
+});
