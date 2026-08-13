@@ -13,9 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const image = `${protocol}://${host}/og.png`;
   return {
     title: "LifeROI",
-    description: "Your personal resource intelligence platform.",
-    openGraph: { title:"LifeROI", description:"Where are your resources really going?", images:[image] },
-    twitter: { card:"summary_large_image", title:"LifeROI", description:"Money. Time. Energy. Attention.", images:[image] },
+    description: "See how saving money, time, and energy can buy back a more beautiful future.",
+    openGraph: { title:"LifeROI — Buy back your future", description:"Turn small resource savings into freedom, time, and possibility.", images:[image] },
+    twitter: { card:"summary_large_image", title:"LifeROI — Buy back your future", description:"Money. Time. Energy. One beautiful future.", images:[image] },
   };
 }
 

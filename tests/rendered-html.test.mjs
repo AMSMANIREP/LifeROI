@@ -81,10 +81,10 @@ test("supports cross-resource documents and the new resource hierarchy", async (
   assert.match(dashboard, /type="file"/);
   assert.match(dashboard, /freshSummary/);
   assert.match(dashboard, /Math\.random/);
-  assert.match(dashboard, /className="subnav"/);
-  assert.match(dashboard, /Money future/);
-  assert.match(dashboard, /Time future/);
-  assert.match(dashboard, /Energy future/);
+  assert.match(dashboard, /resource-world/);
+  assert.match(dashboard, /world-switch/);
+  assert.match(dashboard, /Future Canvas/);
+  assert.doesNotMatch(dashboard, /Money future|Time future|Energy future/);
   assert.match(dashboard, /hidden=\{active!=="Overview"\}/);
   assert.doesNotMatch(dashboard, /navigate\("ROI Compass"\)/);
   assert.match(css, /\.side-foot \.account-copy\{min-width:0/);
@@ -101,4 +101,21 @@ test("recalculates every dashboard family from the generated dataset", async () 
   assert.match(dashboard, /const activityData/);
   assert.match(dashboard, /monthlySpending: dashboard\.money/);
   assert.match(dashboard, /setAdvisorReply\(`Your new dataset/);
+});
+
+test("connects life impact with sourced expert inspiration", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css, layout] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+    readFile(new URL("app/layout.tsx", root), "utf8"),
+  ]);
+  assert.match(dashboard, /THE LIFE DIVIDEND/);
+  assert.match(dashboard, /Morgan Housel/);
+  assert.match(dashboard, /James Clear/);
+  assert.match(dashboard, /Amory Lovins/);
+  assert.match(dashboard, /Read the source/);
+  assert.match(dashboard, /promiseStreak/);
+  assert.match(css, /\.mindset-lab/);
+  assert.match(layout, /Buy back your future/);
 });
