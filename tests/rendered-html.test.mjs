@@ -130,7 +130,8 @@ test("places dynamic inspiration first and provides a working account menu", asy
   const quoteAt = dashboard.indexOf('className="mentor-stage mentor-stage-top');
   const heroAt = dashboard.indexOf('className="hero-grid');
   assert.ok(headerAt < quoteAt && quoteAt < heroAt);
-  assert.match(dashboard, /useState\(\(\) => Math\.floor\(Math\.random\(\)\*mentors\.length\)\)/);
+  assert.match(dashboard, /const \[mentorIndex, setMentorIndex\] = useState\(0\)/);
+  assert.match(dashboard, /setTimeout\(\(\) => setMentorIndex\(Math\.floor\(Math\.random\(\)\*mentors\.length\)\), 0\)/);
   assert.match(dashboard, /aria-expanded=\{accountMenu\}/);
   assert.match(dashboard, /className="account-menu"/);
   assert.match(css, /\.account-menu\{/);
@@ -209,4 +210,12 @@ test("turns all three saved resources into actionable investments", async () => 
   assert.match(css, /@keyframes tortoise-wins/);
   assert.match(css, /@keyframes always-wins/);
   assert.match(css, /prefers-reduced-motion:reduce/);
+});
+
+test("keeps the initial server and browser quote render hydration-safe", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dashboard = await readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8");
+  assert.match(dashboard, /useState\(0\)/);
+  assert.doesNotMatch(dashboard, /useState\(\(\) => Math\.floor\(Math\.random/);
+  assert.match(dashboard, /randomize only after hydration/i);
 });

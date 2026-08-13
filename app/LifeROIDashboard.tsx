@@ -75,7 +75,8 @@ export default function LifeROIDashboard() {
   const [uploadSummary, setUploadSummary] = useState<UploadSummary | null>(null);
   const [projectionResource, setProjectionResource] = useState<"money"|"time"|"energy">("money");
   const [investmentResource, setInvestmentResource] = useState<"money"|"time"|"energy">("money");
-  const [mentorIndex, setMentorIndex] = useState(() => Math.floor(Math.random()*mentors.length));
+  // Keep the SSR and first browser render identical; randomize only after hydration.
+  const [mentorIndex, setMentorIndex] = useState(0);
   const [promiseStreak, setPromiseStreak] = useState(0);
   const [accountMenu, setAccountMenu] = useState(false);
   const [advisorInput, setAdvisorInput] = useState("");
@@ -140,7 +141,11 @@ export default function LifeROIDashboard() {
 
   useEffect(() => { if (!notice) return; const timer = window.setTimeout(() => setNotice(""), 2600); return () => window.clearTimeout(timer); }, [notice]);
   useEffect(() => { if (!burst) return; const timer = window.setTimeout(() => setBurst(null), 1800); return () => window.clearTimeout(timer); }, [burst]);
-  useEffect(() => { const timer=window.setInterval(()=>setMentorIndex(index=>(index+1)%mentors.length),6500); return()=>window.clearInterval(timer); }, []);
+  useEffect(() => {
+    const initial = window.setTimeout(() => setMentorIndex(Math.floor(Math.random()*mentors.length)), 0);
+    const timer = window.setInterval(()=>setMentorIndex(index=>(index+1)%mentors.length),6500);
+    return()=>{ window.clearTimeout(initial); window.clearInterval(timer); };
+  }, []);
 
   function celebrate(message:string, emojis:string[]) {
     setBurst({ id:Date.now(), emojis, message });
