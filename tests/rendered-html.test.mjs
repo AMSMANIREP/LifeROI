@@ -33,7 +33,7 @@ test("wires advisor input, keyboard submit, and every navigation destination", a
   const dashboard = await readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8");
   assert.match(dashboard, /onSubmit=\{e=>\{e\.preventDefault\(\);askAdvisor\(\)\}\}/);
   assert.match(dashboard, /setAdvisorInput\(x\)/);
-  for (const id of ["overview", "money", "time", "energy", "resources", "future", "goals", "opportunities", "settings"]) {
+  for (const id of ["overview", "money", "time", "energy", "resources", "future", "investment", "goals", "opportunities", "settings"]) {
     assert.match(dashboard, new RegExp(`id=\\"${id}\\"`));
   }
   assert.match(dashboard, /IntersectionObserver/);
@@ -187,4 +187,26 @@ test("states the prototype upload boundary and supports keyboard-safe dialogs", 
   assert.match(dashboard, /validateDemoUpload\(file\)/);
   assert.match(dashboard, /event\.key === "Escape"/);
   assert.match(dashboard, /aria-labelledby="active-modal-title"/);
+});
+
+test("turns all three saved resources into actionable investments", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(dashboard, /Invest your savings/);
+  assert.match(dashboard, /Money saved/);
+  assert.match(dashboard, /Time saved/);
+  assert.match(dashboard, /Energy saved/);
+  assert.match(dashboard, /Atomic Habits/);
+  assert.match(dashboard, /SIX-PACK ENERGY/);
+  assert.match(dashboard, /BEE 5-star upgrade fund/);
+  assert.match(dashboard, /SLOW AND STEADY WINS THE RACE/);
+  assert.match(dashboard, /race-rabbit/);
+  assert.match(dashboard, /race-tortoise/);
+  assert.match(css, /@keyframes rabbit-sprint-nap/);
+  assert.match(css, /@keyframes tortoise-wins/);
+  assert.match(css, /@keyframes always-wins/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
 });
