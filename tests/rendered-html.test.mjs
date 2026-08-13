@@ -17,7 +17,7 @@ test("renders the LifeROI product shell", async () => {
   assert.match(html, /LifeROI/);
   assert.match(html, /RESOURCE SCORE/i);
   assert.match(html, /WHAT IF\? SIMULATOR/i);
-  assert.match(html, /not guaranteed/i);
+  assert.match(html, /actual usage can vary/i);
   assert.doesNotMatch(html, /codex-preview/);
 });
 
@@ -49,7 +49,7 @@ test("uses stable tab views, working information dialogs, and data-aware section
   assert.match(dashboard, /const dataAvailable/);
   assert.match(dashboard, /hidden=\{active!=="Settings"\}/);
   assert.match(dashboard, /setInfo\("score"\)/);
-  assert.match(dashboard, /saving an extra/i);
+  assert.match(dashboard, /extra.*achievable/i);
   assert.match(dashboard, /emoji-burst/);
   assert.doesNotMatch(dashboard, /const sectionObserver/);
   assert.match(css, /\.sidebar\{position:fixed!important/);
@@ -70,4 +70,23 @@ test("provides a dedicated upload workspace, LifeROI Compass, and detailed time 
   assert.match(dashboard, /ACTIVITY BREAKDOWN/);
   assert.match(dashboard, /WEEKLY RHYTHM/);
   assert.match(css, /\.time-details\{display:grid/);
+});
+
+test("supports cross-resource documents and the new resource hierarchy", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(dashboard, /type="file"/);
+  assert.match(dashboard, /freshSummary/);
+  assert.match(dashboard, /Math\.random/);
+  assert.match(dashboard, /className="subnav"/);
+  assert.match(dashboard, /Money future/);
+  assert.match(dashboard, /Time future/);
+  assert.match(dashboard, /Energy future/);
+  assert.match(dashboard, /hidden=\{active!=="Overview"\}/);
+  assert.doesNotMatch(dashboard, /navigate\("ROI Compass"\)/);
+  assert.match(css, /\.side-foot \.account-copy\{min-width:0/);
+  assert.match(css, /\.ambient-orb/);
 });
