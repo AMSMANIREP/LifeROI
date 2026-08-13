@@ -27,3 +27,15 @@ test("uses finished product metadata", async () => {
   assert.match(layout, /LifeROI/);
   assert.doesNotMatch(layout, /Starter Project|codex-preview/);
 });
+
+test("wires advisor input, keyboard submit, and every navigation destination", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dashboard = await readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8");
+  assert.match(dashboard, /onSubmit=\{e=>\{e\.preventDefault\(\);askAdvisor\(\)\}\}/);
+  assert.match(dashboard, /setAdvisorInput\(x\)/);
+  for (const id of ["overview", "money", "time", "energy", "resources", "future", "goals", "opportunities", "settings"]) {
+    assert.match(dashboard, new RegExp(`id=\\"${id}\\"`));
+  }
+  assert.match(dashboard, /IntersectionObserver/);
+  assert.match(dashboard, /scroll-floater/);
+});
