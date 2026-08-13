@@ -136,3 +136,21 @@ test("places dynamic inspiration first and provides a working account menu", asy
   assert.match(css, /\.account-menu\{/);
   assert.match(css, /\.mentor-stage-top\{/);
 });
+
+test("uses the LifeROI growth identity and a varied wisdom stream", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css, favicon] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+    readFile(new URL("public/favicon.svg", root), "utf8"),
+  ]);
+  assert.match(dashboard, /Your life, multiplied/);
+  assert.match(dashboard, /LifeROI infinity growth logo/);
+  assert.match(dashboard, /WISDOM STREAM/);
+  assert.match(dashboard, /quote-lesson/);
+  assert.match(dashboard, /Options make people happy/);
+  assert.doesNotMatch(dashboard, /A new perspective with every visit/);
+  assert.doesNotMatch(dashboard, /<b>Upload data<\/b><i>/);
+  assert.match(css, /\.f12\{/);
+  assert.match(favicon, /linearGradient/);
+});
