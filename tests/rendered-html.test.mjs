@@ -90,3 +90,15 @@ test("supports cross-resource documents and the new resource hierarchy", async (
   assert.match(css, /\.side-foot \.account-copy\{min-width:0/);
   assert.match(css, /\.ambient-orb/);
 });
+
+test("recalculates every dashboard family from the generated dataset", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dashboard = await readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8");
+  for (const field of ["dashboard.score", "dashboard.money", "dashboard.screenMinutes", "dashboard.socialMinutes", "dashboard.energyKwh", "dashboard.energyCost", "dashboard.subscriptions", "dashboard.currentSavings", "dashboard.monthlyContribution", "dashboard.monthlyTrend"]) {
+    assert.match(dashboard, new RegExp(field.replace(".", "\\.")));
+  }
+  assert.match(dashboard, /const moneyBreakdown/);
+  assert.match(dashboard, /const activityData/);
+  assert.match(dashboard, /monthlySpending: dashboard\.money/);
+  assert.match(dashboard, /setAdvisorReply\(`Your new dataset/);
+});
