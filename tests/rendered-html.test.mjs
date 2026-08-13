@@ -55,3 +55,19 @@ test("uses stable tab views, working information dialogs, and data-aware section
   assert.match(css, /\.sidebar\{position:fixed!important/);
   assert.match(css, /\.tab-section\[hidden\],\.opps-goals>\[hidden\]/);
 });
+
+test("provides a dedicated upload workspace, LifeROI Compass, and detailed time allocation", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(dashboard, /className="upload-fab"/);
+  assert.match(dashboard, /className="upload-workspace panel tab-section"/);
+  assert.match(dashboard, /LifeROI Compass/);
+  assert.doesNotMatch(dashboard, /Ask LifeROI<\/b>/);
+  assert.match(dashboard, /const timeActivities/);
+  assert.match(dashboard, /ACTIVITY BREAKDOWN/);
+  assert.match(dashboard, /WEEKLY RHYTHM/);
+  assert.match(css, /\.time-details\{display:grid/);
+});
