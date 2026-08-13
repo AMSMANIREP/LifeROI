@@ -39,3 +39,19 @@ test("wires advisor input, keyboard submit, and every navigation destination", a
   assert.match(dashboard, /IntersectionObserver/);
   assert.match(dashboard, /scroll-floater/);
 });
+
+test("uses stable tab views, working information dialogs, and data-aware sections", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(dashboard, /const dataAvailable/);
+  assert.match(dashboard, /hidden=\{active!=="Settings"\}/);
+  assert.match(dashboard, /setInfo\("score"\)/);
+  assert.match(dashboard, /saving an extra/i);
+  assert.match(dashboard, /emoji-burst/);
+  assert.doesNotMatch(dashboard, /const sectionObserver/);
+  assert.match(css, /\.sidebar\{position:fixed!important/);
+  assert.match(css, /\.tab-section\[hidden\],\.opps-goals>\[hidden\]/);
+});
