@@ -154,3 +154,18 @@ test("uses the LifeROI growth identity and a varied wisdom stream", async () => 
   assert.match(css, /\.f12\{/);
   assert.match(favicon, /linearGradient/);
 });
+
+test("derives a stable cute profile character from name and gender", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboard, css] = await Promise.all([
+    readFile(new URL("app/LifeROIDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(dashboard, /type Gender = "male"\|"female"\|"nonbinary"/);
+  assert.match(dashboard, /const cuteCharacter/);
+  assert.match(dashboard, /signature%characters\.length/);
+  assert.match(dashboard, /profileCharacter/);
+  assert.match(dashboard, /personalized \$\{profile\.gender\} character/);
+  assert.match(css, /\.character-avatar\{/);
+  assert.match(css, /\.account-menu-profile\{/);
+});

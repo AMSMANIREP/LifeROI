@@ -36,6 +36,13 @@ const freshSummary = (source="Synthetic cross-resource statement"): UploadSummar
   return { id:Date.now(),source,score,money:randomBetween(68000,108000),categoryShares:[housing,groceries,dining,transport,shopping,100-housing-groceries-dining-transport-shopping],monthlyTrend:Array.from({length:12},(_,i)=>Math.max(48,Math.min(98,score-12+i+randomBetween(-7,7)))),screenMinutes:randomBetween(240,430),socialMinutes:randomBetween(85,210),energyKwh:randomBetween(310,560),energyCost:randomBetween(2800,5100),subscriptions:randomBetween(1800,5200),subscriptionCount:randomBetween(6,16),currentSavings:randomBetween(120000,430000),monthlyContribution:randomBetween(12000,32000),records:randomBetween(34,62),confidence:randomBetween(90,98) };
 };
 const minutesLabel = (minutes:number) => `${Math.floor(minutes/60)}h ${minutes%60}m`;
+type Gender = "male"|"female"|"nonbinary";
+const profile:{name:string;gender:Gender;email:string} = {name:"Arjun Mehta",gender:"male",email:"arjun@liferoi.demo"};
+const cuteCharacter = (name:string,gender:Gender) => {
+  const characters = gender==="female" ? ["👩🏽‍🚀","🦸🏽‍♀️","👩🏽‍🎨","🧚🏽‍♀️","👩🏽‍💻"] : gender==="male" ? ["👨🏽‍🚀","🦸🏽‍♂️","👨🏽‍🎨","🧙🏽‍♂️","👨🏽‍💻"] : ["🧑🏽‍🚀","🦸🏽","🧑🏽‍🎨","🧚🏽","🧑🏽‍💻"];
+  const signature=[...name.toLowerCase()].reduce((total,letter)=>total+(letter.codePointAt(0)??0),0);
+  return characters[signature%characters.length];
+};
 
 const dataAvailable = { money:true, time:true, energy:true, subscriptions:true, goals:true } as const;
 const viewCopy: Record<string, { title:string; subtitle:string; emoji:string }> = {
@@ -93,6 +100,7 @@ export default function LifeROIDashboard() {
   const hasAnyData = Object.values(dataAvailable).some(Boolean);
   const currentView = viewCopy[active] ?? viewCopy.Overview;
   const yearsSooner = Math.max(0, (goalCurrent-goalOptimized)/12);
+  const profileCharacter = cuteCharacter(profile.name,profile.gender);
 
   useEffect(() => {
     document.documentElement.classList.add("motion-ready");
@@ -159,7 +167,7 @@ export default function LifeROIDashboard() {
     <aside className="sidebar" aria-label="Primary navigation">
       <button className="brand" onClick={() => navigate("Overview")}><span className="brand-mark" aria-label="LifeROI infinity growth logo">∞</span><span>LifeROI<small>Life, compounded</small></span></button>
       <nav><button onClick={()=>navigate("Overview")} className={active==="Overview"?"active":""}><span>⌂</span>Overview</button><div className={`resource-world ${["Resources","Money","Time","Energy"].includes(active)?"active":""}`}><button className="world-head" onClick={()=>navigate("Resources")}><span>✦</span><b>Resource worlds</b><small>Choose what to transform</small></button><div className="world-switch"><button onClick={()=>navigate("Money")} className={active==="Money"?"selected":""} title="Money intelligence"><span>💰</span><small>Money</small></button><button onClick={()=>navigate("Time")} className={active==="Time"?"selected":""} title="Time intelligence"><span>⏳</span><small>Time</small></button><button onClick={()=>navigate("Energy")} className={active==="Energy"?"selected":""} title="Energy intelligence"><span>⚡</span><small>Energy</small></button></div></div><button onClick={()=>navigate("Future")} className={`future-canvas-link ${active==="Future"?"active":""}`}><span>🌅</span><div><b>Future Canvas</b><small>See all three compound</small></div><i>→</i></button><button onClick={()=>navigate("Goals")} className={active==="Goals"?"active":""}><span>◎</span>Goals</button><button onClick={()=>navigate("Settings")} className={active==="Settings"?"active":""}><span>⚙</span>Settings</button></nav>
-      <div className="side-foot"><div className="mini-avatar">A</div><div className="account-copy"><strong>Arjun Mehta</strong><small>Demo workspace</small></div><button className="account-trigger" aria-label="More account options" aria-expanded={accountMenu} onClick={()=>setAccountMenu(open=>!open)}>•••</button>{accountMenu&&<div className="account-menu" role="menu"><div><b>Arjun Mehta</b><small>arjun@liferoi.demo</small></div><button role="menuitem" onClick={()=>{setAccountMenu(false);navigate("Settings")}}><span>⚙</span>Privacy & settings</button><button role="menuitem" onClick={()=>{setAccountMenu(false);navigate("Upload")}}><span>📥</span>Manage data</button><button role="menuitem" onClick={()=>{setAccountMenu(false);setNotice("Demo workspace is already securely signed out of external accounts")}}><span>↗</span>Sign out of demo</button></div>}</div>
+      <div className="side-foot"><div className="mini-avatar character-avatar" role="img" aria-label={`${profile.name}'s personalized ${profile.gender} character`} title={`Made for ${profile.name}`}>{profileCharacter}<i>✨</i></div><div className="account-copy"><strong>{profile.name}</strong><small>Demo workspace</small></div><button className="account-trigger" aria-label="More account options" aria-expanded={accountMenu} onClick={()=>setAccountMenu(open=>!open)}>•••</button>{accountMenu&&<div className="account-menu" role="menu"><div className="account-menu-profile"><span className="menu-character" aria-hidden="true">{profileCharacter}</span><span><b>{profile.name}</b><small>{profile.email}</small><em>Character matched to name + gender ✨</em></span></div><button role="menuitem" onClick={()=>{setAccountMenu(false);navigate("Settings")}}><span>⚙</span>Privacy & settings</button><button role="menuitem" onClick={()=>{setAccountMenu(false);navigate("Upload")}}><span>📥</span>Manage data</button><button role="menuitem" onClick={()=>{setAccountMenu(false);setNotice("Demo workspace is already securely signed out of external accounts")}}><span>↗</span>Sign out of demo</button></div>}</div>
     </aside>
 
     <section className="content" id="overview">
