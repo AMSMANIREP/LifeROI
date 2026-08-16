@@ -1,0 +1,1027 @@
+LIFEROI - TOTAL PROJECT DOCUMENTATION
+=====================================
+
+Document version : 1.0
+Prepared on      : 16 August 2026
+Project          : LifeROI - Resource Intelligence / Life ROI Platform
+Public website   : https://liferoi-resource-intelligence.amsmani1993.chatgpt.site/
+Source repository: https://github.com/AMSMANIREP/LifeROI
+
+
+1. EXECUTIVE SUMMARY
+====================
+
+LifeROI is an interactive resource-intelligence application that helps a user
+understand the long-term impact of saving three important life resources:
+
+  1. Money
+  2. Time
+  3. Energy
+
+The central product question is:
+
+  "What could my life become if I saved a little more?"
+
+The application converts small daily improvements into understandable future
+outcomes. Examples include money redirected toward a financial goal, time
+recovered for learning or fitness, and electricity savings redirected toward
+more efficient living.
+
+The current public application is a polished synthetic-data prototype. It is
+appropriate for concept demonstrations, interaction testing, and explaining the
+LifeROI vision. It is not yet a production system for real financial or personal
+documents.
+
+Important current boundary:
+
+  - A selected file is checked for name, size, extension, and MIME type.
+  - The application does not read, extract, upload, or store its contents.
+  - Dashboard values are generated synthetic values, not document-derived data.
+  - D1 and R2 bindings and a database schema exist, but application CRUD APIs,
+    real persistence, and private document processing are not implemented.
+
+
+2. PROJECT VISION
+=================
+
+LifeROI is based on the idea that return on investment should not be measured
+only in money. A better life can also be created by recovering attention,
+protecting energy, improving health, learning, and increasing freedom of choice.
+
+The product aims to help a user:
+
+  - See where money, time, and energy are currently going.
+  - Discover low-disruption opportunities to save each resource.
+  - Change assumptions and immediately see the future effect.
+  - Compare the current path with an optimized path.
+  - Connect savings to meaningful goals and investments.
+  - Receive encouraging, data-grounded guidance.
+  - Build consistency through motivational design and positive feedback.
+
+
+3. TARGET USERS
+===============
+
+Primary users:
+
+  - Individuals who want a combined view of personal spending, time use, and
+    household energy consumption.
+  - People working toward savings, fitness, learning, sustainability, or
+    lifestyle goals.
+  - Users who find traditional financial dashboards too narrow or static.
+
+Secondary audiences:
+
+  - Product-demo reviewers and academic evaluators.
+  - Personal-finance and wellbeing educators.
+  - Future partners providing financial, screen-time, or utility data.
+
+
+4. CURRENT PRODUCT FEATURES
+===========================
+
+4.1 Overview
+------------
+
+The Overview is the main story of the application. It combines available
+resource data and displays:
+
+  - A rotating expert-wisdom section.
+  - Money, time, and energy indicators.
+  - Cross-resource opportunities.
+  - A goal-progress view.
+  - Time and energy opportunity summaries.
+  - Resource-saving projections.
+  - Data confidence and source labels.
+
+Dashboard information is designed to appear only when the corresponding data
+is available.
+
+4.2 Resource Worlds
+-------------------
+
+Resources are organized under one parent area with three distinct views:
+
+  - Money: spending categories, recurring costs, savings opportunities, and
+    financial projections.
+  - Time: daily activity allocation, screen-time breakdown, weekly rhythm, and
+    reclaimed-time possibilities.
+  - Energy: electricity use, cost, efficiency opportunity, and an energy-saver
+    plan.
+
+4.3 Future Canvas
+-----------------
+
+Future Canvas provides separate Money, Time, and Energy projection modes.
+The user can change:
+
+  - Savings or reduction percentage.
+  - Time horizon from 1 to 30 years.
+  - Illustrative annual return for the money scenario.
+
+The output changes immediately and presents the result in encouraging language.
+The application clearly separates arithmetic cash savings from illustrative
+investment growth.
+
+4.4 Investment
+--------------
+
+The Investment section recommends constructive destinations for saved resources.
+
+Money examples:
+
+  - Emergency reserves.
+  - Goal-based saving.
+  - Diversified, educational investment options.
+
+Time examples:
+
+  - Reading books such as Atomic Habits, The Psychology of Money, and Deep Work.
+  - Fitness and strength-building.
+  - Rest, creativity, and personal relationships.
+
+Energy examples:
+
+  - High-efficiency appliance reserves.
+  - Smart home efficiency improvements.
+  - Solar-readiness or sustainability projects.
+
+These recommendations are educational suggestions, not personalized financial
+or medical advice.
+
+4.5 Goals
+---------
+
+The goal module compares:
+
+  - Current savings.
+  - Target amount.
+  - Current monthly contribution.
+  - Estimated time on the current path.
+  - Estimated time after the selected optimization.
+
+The target can be changed interactively, and the timeline is recalculated.
+
+4.6 Upload Workspace
+--------------------
+
+The Upload workspace accepts the selection of these demo formats:
+
+  - PDF
+  - CSV
+  - TXT
+  - PNG
+  - JPG/JPEG
+
+Maximum demo file size: 10 MB.
+
+Current upload behavior:
+
+  - Validates file metadata.
+  - Rejects empty, oversized, unsupported, or MIME-mismatched files.
+  - Generates a new synthetic cross-resource dataset after validation.
+  - Updates Money, Time, Energy, Subscriptions, Goals, Opportunities,
+    Future Canvas, Investment, and LifeROI Compass from that dataset.
+
+No file body is read or stored in the current public prototype.
+
+4.7 LifeROI Compass
+-------------------
+
+LifeROI Compass is the interactive advisory dialog. It supports:
+
+  - Suggested questions that populate the input field.
+  - Keyboard submission using Enter.
+  - Questions about overspending, goals, recurring costs, money, time, and
+    energy.
+  - Answers derived from the currently active synthetic dataset.
+  - Focus management, Escape-to-close, and keyboard-safe modal behavior.
+
+The current advisor uses deterministic rules and prepared responses. It is not
+connected to an external large-language-model API.
+
+4.8 Settings and Information Dialogs
+------------------------------------
+
+Settings includes interactive retention choices:
+
+  - Delete source after extraction.
+  - Keep source for 30 days.
+  - Keep source until manually deleted.
+
+In the current prototype, these controls demonstrate the intended user
+experience. Real deletion and retention jobs require the production backend.
+
+Information buttons explain the Resource Score, projections, energy, time, and
+privacy behavior.
+
+4.9 Engagement and Motivation
+-----------------------------
+
+The interface contains:
+
+  - Animated background decorations.
+  - Emoji celebrations when inputs change.
+  - Encouraging projection messages.
+  - Rotating expert quotes with source links.
+  - A personalized demo character based on name and gender.
+  - A tortoise-and-rabbit progress race illustrating that slow and steady
+    consistency wins.
+  - Reduced-motion support for users who prefer less animation.
+
+
+5. FRONTEND GRAPHICAL REPRESENTATION
+====================================
+
+The following diagram can be shown directly during a demo.
+
+                         +---------------------------+
+                         |        LIFE ROI USER      |
+                         | Browser / Mobile / Desktop|
+                         +-------------+-------------+
+                                       |
+                                       v
+          +------------------------------------------------------+
+          |              REACT APPLICATION SHELL                 |
+          |  Sidebar | Mobile Nav | Header | Upload FAB | Compass|
+          +--------------------------+---------------------------+
+                                     |
+       +-----------------------------+-----------------------------+
+       |                             |                             |
+       v                             v                             v
++------------------+       +----------------------+       +------------------+
+| PRODUCT VIEWS    |       | SHARED UI STATE      |       | MODALS / FEEDBACK|
+|                  |       |                      |       |                  |
+| - Overview       |<----->| - Active view        |<----->| - Compass        |
+| - Resources      |       | - Demo dataset       |       | - Information    |
+| - Money          |       | - Reduction percent  |       | - Account menu   |
+| - Time           |       | - Years / return     |       | - Notifications  |
+| - Energy         |       | - Goal target        |       | - Emoji bursts   |
+| - Future Canvas  |       | - Selected resource  |       +------------------+
+| - Investment     |       +----------+-----------+
+| - Goals          |                  |
+| - Settings       |                  v
+| - Upload         |       +-------------------------------+
++------------------+       | DETERMINISTIC DOMAIN SERVICES |
+                           |                               |
+                           | calculateProjection()         |
+                           | timeRecovered()               |
+                           | monthsToGoal()                |
+                           | validateDemoUpload()          |
+                           +---------------+---------------+
+                                           |
+                                           v
+                           +-------------------------------+
+                           | REACT RE-RENDER               |
+                           | All visible panels update     |
+                           | from the same dataset         |
+                           +-------------------------------+
+
+
+6. CURRENT RUNTIME ARCHITECTURE
+===============================
+
+This is the architecture implemented by the public prototype today.
+
+ +-------------+       HTTPS        +------------------------------+
+ | User browser| ------------------> | Cloudflare Worker            |
+ +-------------+                     | vinext app-router handler    |
+       ^                             | image optimization endpoint  |
+       |                             +---------------+--------------+
+       |                                             |
+       | React Server Components / HTML / JS         |
+       +---------------------------------------------+
+                                                     |
+                                                     v
+                                      +-----------------------------+
+                                      | React 19 + TypeScript UI    |
+                                      | LifeROIDashboard.tsx        |
+                                      +--------------+--------------+
+                                                     |
+                     +-------------------------------+----------------+
+                     |                                                |
+                     v                                                v
+      +-------------------------------+             +----------------------------+
+      | Synthetic data generator      |             | Domain functions           |
+      | freshSummary()                |             | projections + validation   |
+      +-------------------------------+             +----------------------------+
+
+Declared but not used by application data flows today:
+
+  +----------------------+     +----------------------+
+  | Cloudflare D1 / DB   |     | Cloudflare R2        |
+  | Schema and migration |     | UPLOADS binding      |
+  | exist                |     | declared             |
+  +----------------------+     +----------------------+
+
+There are currently no application API routes connecting the dashboard to D1,
+R2, or an AI extraction provider.
+
+
+7. CURRENT DATA FLOW
+====================
+
+7.1 Fresh demo flow
+-------------------
+
+  User clicks "Generate fresh demo"
+                  |
+                  v
+  freshSummary() creates randomized synthetic values
+                  |
+                  v
+  React replaces the current dashboard dataset
+                  |
+                  v
+  Projection and opportunity calculations run again
+                  |
+                  v
+  Overview + Resources + Future + Investment + Goals + Compass update
+
+7.2 Demo file-selection flow
+----------------------------
+
+  User chooses a local file
+             |
+             v
+  Check size, extension, and MIME type
+             |
+       +-----+------+
+       |            |
+    Invalid       Valid
+       |            |
+       v            v
+  Show error    Use file name as a demo source label
+                    |
+                    v
+              Generate synthetic data
+                    |
+                    v
+              Recalculate the dashboard
+
+The content bytes do not leave the browser and are not parsed in the prototype.
+
+
+8. PLANNED PRODUCTION BACKEND GRAPHICAL REPRESENTATION
+======================================================
+
+The following is the intended secure production architecture. It should be
+described as the roadmap, not as an already completed backend.
+
+ +------------------+
+ | Authenticated user|
+ +---------+--------+
+           |
+           | Sign in with ChatGPT identity headers
+           v
+ +---------------------------------------------------+
+ | CLOUDFLARE WORKER / SERVER APPLICATION BOUNDARY   |
+ |                                                   |
+ | Authentication | authorization | rate limiting   |
+ +--------+----------------------+-------------------+
+          |                      |
+          v                      v
+ +------------------+    +--------------------------+
+ | Upload API       |    | Owner-scoped record APIs |
+ | Server validation|    | Goals / scenarios / data |
+ +--------+---------+    +-------------+------------+
+          |                            |
+          v                            |
+ +------------------+                  |
+ | Private R2 bucket|                  |
+ | Source documents |                  |
+ +--------+---------+                  |
+          |                            |
+          v                            |
+ +---------------------------+         |
+ | Provider-neutral AI       |         |
+ | classify + extract        |         |
+ +-------------+-------------+         |
+               |                       |
+               v                       |
+ +---------------------------+         |
+ | Schema validation         |         |
+ | confidence + provenance   |         |
+ +-------------+-------------+         |
+               |                       |
+               v                       |
+ +---------------------------+         |
+ | Review and Confirm UI     |         |
+ | User corrects extracted   |         |
+ | fields before persistence |         |
+ +-------------+-------------+         |
+               |                       |
+               +-----------+-----------+
+                           |
+                           v
+                 +---------------------+
+                 | Cloudflare D1       |
+                 | Owner-scoped data   |
+                 +----------+----------+
+                            |
+                            v
+                 +---------------------+
+                 | Domain services     |
+                 | analysis / goals /  |
+                 | projections / recs  |
+                 +----------+----------+
+                            |
+                            v
+                 +---------------------+
+                 | LifeROI dashboard   |
+                 | and Compass         |
+                 +---------------------+
+
+
+9. PLANNED PRODUCTION SEQUENCE
+==============================
+
+  1. User signs in.
+  2. Worker reads the stable user identity from trusted platform headers.
+  3. User uploads a supported document.
+  4. Server verifies file signature, type, size, page/decompression limits, and
+     idempotency.
+  5. Source document is stored using an opaque, owner-scoped R2 key.
+  6. AI classifies the document and returns a strictly structured payload.
+  7. Server validates every field, confidence value, unit, date, and currency.
+  8. The Review and Confirm screen shows extracted values and provenance.
+  9. Only confirmed data is written to owner-scoped D1 records.
+ 10. Domain services calculate opportunities, projections, and goal timelines.
+ 11. Dashboard and advisor retrieve only the signed-in user's confirmed data.
+ 12. Retention, export, source deletion, and account deletion are enforced by
+     server-side workflows.
+
+
+10. DATABASE MODEL
+==================
+
+The Drizzle schema currently defines five tables. The platform user ID is stored
+as user_id on each table; there is no separate local user table.
+
+                 +-------------------+
+                 | PLATFORM USER ID  |
+                 +---------+---------+
+                           |
+         +-----------------+-------------------+-------------------+
+         |                 |                   |                   |
+         v                 v                   v                   v
+ +---------------+  +---------------+  +---------------+  +----------------+
+ | documents     |  | goals         |  | scenarios     |  | recommendations|
+ |---------------|  |---------------|  |---------------|  |----------------|
+ | id            |  | id            |  | id            |  | id             |
+ | user_id       |  | user_id       |  | user_id       |  | user_id        |
+ | name          |  | name          |  | name          |  | resource_type  |
+ | object_key    |  | target_value  |  | reduction_%   |  | title          |
+ | mime_type     |  | current_value |  | annual_return |  | annual_impact  |
+ | status        |  | unit          |  | years         |  | difficulty     |
+ | created_at    |  | target_date   |  +---------------+  | confidence     |
+ +-------+-------+  +---------------+                     | status         |
+         |                                                +----------------+
+         |
+         v
+ +-------------------+
+ | resource_records  |
+ |-------------------|
+ | id                |
+ | user_id           |
+ | document_id       |
+ | resource_type     |
+ | category          |
+ | occurred_at       |
+ | value + unit      |
+ | confidence        |
+ | metadata (JSON)   |
+ +-------------------+
+
+Supported resource types in the schema:
+
+  - money
+  - time
+  - electricity
+  - subscription
+
+Schema files:
+
+  - db/schema.ts
+  - db/index.ts
+  - drizzle/0000_old_slyde.sql
+  - drizzle.config.ts
+
+Current status: schema and migration exist; dashboard queries and mutations do
+not yet use them.
+
+
+11. DOMAIN CALCULATIONS
+=======================
+
+All core arithmetic is deterministic and implemented outside any AI model.
+
+11.1 Money projection
+---------------------
+
+Monthly savings:
+
+  monthly_savings = monthly_spending * (reduction_percentage / 100)
+
+Annual savings:
+
+  annual_savings = monthly_savings * 12
+
+Cash value after N months:
+
+  future_cash = current_savings + (monthly_savings * months)
+
+Investment scenario using an ordinary monthly annuity:
+
+  monthly_rate = annual_return / 100 / 12
+
+  future_investment =
+      current_savings * (1 + monthly_rate)^months
+      + monthly_savings * (((1 + monthly_rate)^months - 1) / monthly_rate)
+
+If the return is zero, the investment value equals the cash value.
+
+Inflation-adjusted scenario:
+
+  real_value = future_investment / (1 + inflation_rate)^years
+
+11.2 Time recovery
+------------------
+
+  daily_minutes_recovered = minutes_per_day * reduction_percentage / 100
+  weekly_hours_recovered   = daily_minutes_recovered * 7 / 60
+  annual_hours_recovered   = daily_minutes_recovered * 365 / 60
+
+11.3 Goal timing
+----------------
+
+  months_to_goal = ceiling((target - current) / monthly_contribution)
+
+Special cases:
+
+  - If current value already meets the target, result is zero months.
+  - If contribution is zero while the goal is incomplete, the result is
+    effectively infinite.
+  - Invalid, negative, NaN, infinite, or out-of-range inputs are rejected.
+
+
+12. FRONTEND COMPONENT AND STATE DESIGN
+=======================================
+
+Primary component:
+
+  app/LifeROIDashboard.tsx
+
+Important state groups:
+
+  Navigation state
+    - active view
+    - account menu
+    - modal information topic
+
+  Dataset state
+    - baseline or generated UploadSummary
+    - upload-ready state
+    - data availability
+
+  Projection state
+    - reduction percentage
+    - years
+    - annual return
+    - cash/growth mode
+    - selected projection resource
+
+  Planning state
+    - goal target
+    - selected investment resource
+    - reclaimed-time destination
+    - dismissed opportunities
+
+  Advisor state
+    - input
+    - last question
+    - response
+    - thinking state
+
+  Feedback state
+    - notifications
+    - emoji celebrations
+    - mentor rotation
+
+Derived values are calculated with memoized React computations so all panels
+use the same active dataset.
+
+
+13. TECHNOLOGY STACK
+====================
+
+Frontend and rendering:
+
+  - React 19.2.6
+  - React DOM 19.2.6
+  - TypeScript 5.9.3
+  - vinext 1.0.0-beta.2
+  - Vite 8.0.13
+  - Tailwind CSS/PostCSS tooling is installed; the application also uses a
+    substantial custom stylesheet in app/globals.css.
+
+Cloud platform:
+
+  - Cloudflare Worker runtime
+  - Cloudflare image optimization integration
+  - Cloudflare Sites hosting
+  - D1 binding name: DB
+  - R2 binding name: UPLOADS
+
+Data tooling:
+
+  - Drizzle ORM 0.45.2
+  - Drizzle Kit 0.31.10
+  - SQLite/D1 schema and migration
+
+Quality tooling:
+
+  - Node built-in test runner
+  - ESLint 9
+  - React, React Hooks, Next, TypeScript, and accessibility lint rules
+
+Minimum Node.js version:
+
+  - Node.js 22.13 or later
+
+
+14. PROJECT DIRECTORY GUIDE
+===========================
+
+  app/
+    LifeROIDashboard.tsx    Main interactive application
+    globals.css             Visual system, responsive layout, animations
+    layout.tsx              Root document and social metadata
+    page.tsx                Public home page
+    chatgpt-auth.ts         Optional/required ChatGPT sign-in helpers
+    domain/
+      projection.ts         Money, time, and goal calculations
+      upload.ts             Demo file-metadata validation
+
+  worker/
+    index.ts                Cloudflare Worker and vinext routing entry
+
+  db/
+    schema.ts               Drizzle tables
+    index.ts                D1 database accessor
+
+  drizzle/
+    0000_old_slyde.sql      Initial database migration
+    meta/                   Migration metadata
+
+  tests/
+    projection.test.mjs     Domain formula and input-boundary tests
+    upload.test.mjs         Upload metadata validation tests
+    rendered-html.test.mjs  Rendered application integration assertions
+    performance/            Worker-render smoke test
+
+  docs/
+    ARCHITECTURE.md         Production design and implementation plan
+    QA-REPORT.md            Quality, security, and readiness assessment
+
+  public/
+    favicon.svg             Website icon
+    og.png                  Social preview
+    mentors/                Expert images used by the wisdom stream
+
+  .openai/hosting.json      Sites project plus D1/R2 binding declaration
+  vite.config.ts            vinext, Sites, Cloudflare, and local bindings
+  package.json              Scripts and dependencies
+
+
+15. AUTHENTICATION DESIGN
+=========================
+
+The project includes helpers for Sign in with ChatGPT.
+
+Trusted identity headers:
+
+  - oai-authenticated-user-id
+  - oai-authenticated-user-email
+  - oai-authenticated-user-full-name
+
+Available helpers:
+
+  - getChatGPTUser()
+  - requireChatGPTUser(returnTo)
+  - chatGPTSignInPath(returnTo)
+  - chatGPTSignOutPath(returnTo)
+
+The public dashboard currently does not require authentication. Production
+write operations and user-specific records must call the authentication helper
+and apply owner checks on every query.
+
+
+16. SECURITY AND PRIVACY MODEL
+==============================
+
+Current prototype protections:
+
+  - Explicit synthetic-data-only notice.
+  - File size, extension, MIME type, and empty-file checks.
+  - No reading or storage of selected file contents.
+  - Deterministic arithmetic input validation.
+  - React output escaping for displayed text.
+  - Keyboard-safe dialogs and focus restoration.
+
+Required production protections:
+
+  - Authentication and owner authorization on every read and write.
+  - Private R2 objects with opaque owner-scoped keys.
+  - Short-lived signed downloads.
+  - Server-side byte-signature and decompression validation.
+  - Malware and password-protected-document policy.
+  - Duplicate and overlapping-statement detection.
+  - Strict AI response schemas and confidence thresholds.
+  - Prompt-injection isolation for untrusted document content.
+  - Mandatory Review and Confirm before analytics.
+  - Complete export, retention, source deletion, and account deletion.
+  - Logs that exclude document bodies and sensitive extracted content.
+  - Two-user adversarial tests against cross-user access.
+
+
+17. ACCESSIBILITY AND RESPONSIVE DESIGN
+=======================================
+
+Implemented accessibility-oriented behavior includes:
+
+  - Semantic buttons and form controls.
+  - Descriptive aria-label values.
+  - Keyboard submission in LifeROI Compass.
+  - Escape-to-close and focus containment in dialogs.
+  - Focus restoration when a dialog closes.
+  - Reduced-motion handling.
+  - Mobile bottom navigation.
+  - Responsive sidebar and dashboard layouts.
+  - Data-aware hidden sections and explicit empty states.
+
+
+18. TESTING AND QUALITY STATUS
+==============================
+
+Verified on 16 August 2026:
+
+  - Production build: PASSED
+  - Automated tests: 24 passed, 0 failed
+  - ESLint: 0 errors, 2 image-optimization warnings
+
+Test coverage includes:
+
+  - Arithmetic savings.
+  - Monthly compounding and inflation separation.
+  - Time recovery.
+  - Goal edge cases.
+  - Monotonic savings behavior.
+  - Rejection of unsafe numeric inputs.
+  - Accepted and rejected demo upload formats.
+  - Application shell and metadata.
+  - Navigation destinations.
+  - Advisor input and Enter submission.
+  - Information dialogs and settings.
+  - Resource hierarchy and detailed time view.
+  - Full dashboard recalculation from new demo data.
+  - Expert inspiration and account menu.
+  - Profile character generation.
+  - Upload control placement.
+  - Keyboard-safe modal behavior.
+  - Investment recommendations for all three resources.
+  - Hydration-safe quote initialization.
+
+Not yet covered because the corresponding production systems do not exist:
+
+  - Real D1/R2 integration.
+  - Authenticated owner-isolation tests.
+  - Real document parsing and AI contract tests.
+  - Cross-browser Playwright tests.
+  - Complete accessibility scanner suite.
+  - Production upload and API load tests.
+
+
+19. LOCAL DEVELOPMENT
+=====================
+
+Prerequisite:
+
+  Node.js 22.13 or newer
+
+Typical commands:
+
+  npm install
+  npm run dev
+  npm run build
+  npm test
+  npm run lint
+  npm run db:generate
+
+Default local website:
+
+  http://localhost:3000/
+
+The Vite configuration creates local placeholder D1 and R2 bindings so the
+Cloudflare application shape can start without production resource IDs.
+
+
+20. DEPLOYMENT
+==============
+
+Hosting platform:
+
+  Cloudflare-backed OpenAI Sites deployment
+
+Sites project ID:
+
+  appgprj_6a7d2b007ed0819190a0ce7ecd7f0028
+
+Public URL:
+
+  https://liferoi-resource-intelligence.amsmani1993.chatgpt.site/
+
+GitHub repository:
+
+  https://github.com/AMSMANIREP/LifeROI
+
+Deployment flow:
+
+  Source -> vinext/Vite build -> Cloudflare Worker bundle -> Sites version ->
+  public deployment
+
+
+21. DEMO EXPLANATION FLOW
+=========================
+
+Suggested five-minute presentation:
+
+Minute 0:00-0:40 - Introduce the problem
+
+  "People track money, time, and energy separately. LifeROI connects them and
+  shows how small daily savings can improve the future."
+
+Minute 0:40-1:25 - Explain the product
+
+  Open Overview and explain Money, Time, and Energy. Show that opportunities
+  and goals are calculated from one shared resource dataset.
+
+Minute 1:25-2:05 - Generate data
+
+  Open Upload, explain the synthetic-data safety boundary, and choose Generate
+  fresh demo. Return to Overview and show that all values changed together.
+
+Minute 2:05-2:50 - Demonstrate interaction
+
+  Open Future Canvas. Change the reduction percentage and time horizon. Explain
+  that the calculation is deterministic and that the encouraging message is
+  updated immediately.
+
+Minute 2:50-3:30 - Show meaningful reinvestment
+
+  Open Investment. Switch between Money, Time, and Energy. Explain that LifeROI
+  does not stop at saving; it recommends meaningful destinations for the saved
+  resource.
+
+Minute 3:30-4:10 - Show LifeROI Compass
+
+  Open Compass, choose a suggested question, and press Enter. Explain that the
+  prototype response is derived from available demo data.
+
+Minute 4:10-4:45 - Explain the frontend and backend
+
+  Use the diagrams in Sections 5, 6, and 8. Clearly state that React and the
+  deterministic calculations are implemented, while private R2 upload, AI
+  extraction, D1 persistence, and authenticated APIs are the production plan.
+
+Minute 4:45-5:00 - Close
+
+  "LifeROI makes progress visible and actionable. It shows that saving money,
+  time, and energy is not deprivation; it is an investment in a better future."
+
+
+22. CURRENT LIMITATIONS
+=======================
+
+  - The public application uses synthetic data.
+  - Real file contents are not read or uploaded.
+  - No production document extraction exists.
+  - No application API routes exist for D1 or R2.
+  - Database schema and migrations are not connected to dashboard CRUD.
+  - The dashboard does not enforce authentication.
+  - Settings are demonstration controls, not real retention jobs.
+  - LifeROI Compass is deterministic, not a production AI assistant.
+  - Financial projections are illustrative and not guarantees.
+  - Cross-browser and real mobile-device testing remain to be completed.
+
+
+23. RECOMMENDED ROADMAP
+=======================
+
+Phase 1 - Secure foundation
+
+  - Require identity for personal data.
+  - Implement owner-scoped APIs.
+  - Add D1 CRUD services and transactions.
+
+Phase 2 - Private ingestion
+
+  - Implement R2 upload and deletion.
+  - Add server-side file-signature validation and limits.
+  - Add document state, idempotency, and duplicate detection.
+
+Phase 3 - Extraction and review
+
+  - Create provider-neutral AI classification and extraction adapters.
+  - Validate output using strict schemas.
+  - Add field confidence and immutable provenance.
+  - Implement Review and Confirm.
+
+Phase 4 - Real analytics
+
+  - Replace synthetic dashboard state with confirmed records.
+  - Implement real resource analysis and opportunity ranking.
+  - Persist goals, scenarios, and recommendations.
+
+Phase 5 - Trusted advisor
+
+  - Limit retrieval to the signed-in user's confirmed records.
+  - Add citations back to source records.
+  - Add refusal and safe-failure behavior.
+
+Phase 6 - Production hardening
+
+  - Add API, D1, R2, AI, security, accessibility, browser, and load tests.
+  - Add observability without sensitive payloads.
+  - Implement retention, export, deletion, and recovery drills.
+
+
+24. SOURCE AND INSPIRATION REFERENCES USED BY THE APPLICATION
+=============================================================
+
+The application links users to original educational sources, including:
+
+  - Morgan Housel / Collaborative Fund:
+    https://collabfund.com/blog/let-me-convince-you-to-save-money/
+
+  - James Clear / Atomic Habits:
+    https://jamesclear.com/atomic-habits
+
+  - Rocky Mountain Institute / Amory Lovins resources:
+    https://rmi.org/resources/energy-end-use-efficiency/
+
+  - Bureau of Energy Efficiency:
+    https://www.beeindia.gov.in/
+
+External sources provide inspiration and education. They are not used to
+calculate the user's dashboard values.
+
+
+25. GLOSSARY
+============
+
+Resource intelligence
+  The combined interpretation of money, time, energy, and related life choices.
+
+Life ROI
+  The positive future value produced by a present-day resource decision.
+
+Deterministic calculation
+  A formula that produces the same result from the same inputs without AI
+  interpretation.
+
+Synthetic data
+  Artificially generated demo information that does not represent a real user.
+
+Provenance
+  Information describing where a value came from and whether it was extracted,
+  inferred, or confirmed by the user.
+
+D1
+  Cloudflare's SQL database service, used in the planned architecture for
+  structured owner-scoped records.
+
+R2
+  Cloudflare object storage, planned for private source documents.
+
+Review and Confirm
+  The required user step that checks extracted information before it influences
+  analytics.
+
+
+26. FINAL PROJECT STATEMENT
+===========================
+
+LifeROI demonstrates a broader way to think about personal progress. The current
+prototype successfully provides an engaging, responsive, and data-reactive
+frontend with deterministic projections and cross-resource recommendations. Its
+production future depends on implementing authenticated APIs, private storage,
+validated extraction, user confirmation, and complete privacy controls.
+
+The correct demo message is therefore:
+
+  "The interactive LifeROI experience is working today with safe synthetic
+  data. The secure personal-data backend is the next production phase."
+
+END OF DOCUMENT
+
