@@ -1,4 +1,18 @@
-# vinext-starter
+# LifeROI
+
+LifeROI is an interactive Resource Intelligence platform that helps users
+understand how saving and investing their money, time, and energy can create a
+larger long-term impact on their lives.
+
+## Project Demo Resources
+
+- [Live LifeROI application](https://liferoi-resource-intelligence.amsmani1993.chatgpt.site/)
+- [Video demonstration](https://jumpshare.com/folder/dLih54DuejAHIY7n1BDw)
+- [Complete project documentation](LifeROI_Total_Project_Documentation.txt)
+- [Project presentation](LifeROI_Project_Presentation_FINAL_v5.pptx)
+- [GitHub repository](https://github.com/AMSMANIREP/LifeROI)
+
+## Technical Foundation
 
 A clean full-stack starter running on
 [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
